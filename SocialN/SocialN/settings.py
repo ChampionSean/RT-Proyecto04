@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rSocial.apps.RsocialConfig',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -77,9 +78,9 @@ WSGI_APPLICATION = 'SocialN.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'myproject',
-        'USER': 'myprojectuser',
-        'PASSWORD': 'password',
+        'NAME': 'rsocial',
+        'USER': 'jango',
+        'PASSWORD': 'gorgonita999',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -104,6 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ('rSocial.MyBackend.UserBackend', 'django.contrib.auth.backends.ModelBackend')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

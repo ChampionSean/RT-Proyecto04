@@ -1,0 +1,27 @@
+
+<ul>
+<li><a href="/rSocial/registro">Registro</a></li>
+<li><a href="/rSocial/Inicio">Inicion Sesion</a></li>
+<li><a href="/admin">Admin</a></li>
+</ul>
+<h1>Posts</h1>
+{% if hay_posts %}
+    <ul>
+    {% for post in post_list %}
+        <li><a href="/rSocial/post/{{ post.id_post }}/">{{ post.titulo }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay posts</p>
+{% endif %}
+<h1>Grupos</h1>
+{% if hay_grupos %}
+    <ul>
+    {% for group in group_list %}
+        <li><a href="/rSocial/grupo/{{ group.id_grupo }}/">{{ group.nombre }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay grupos</p>
+{% endif %}
+
