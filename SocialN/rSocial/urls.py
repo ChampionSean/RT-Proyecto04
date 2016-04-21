@@ -10,6 +10,6 @@ urlpatterns = [
     url(r'^salir/(.+)$', views.salir, name='salir'),
     url(r'^Perfil/(.+)$', views.Perfil, name='Perfil'),
     url(r'^banda/(.+)$', views.Controller, name='Controller'),
-    url(r'^(.+)$', views.index2, name='index2'),
+    url(r'^ind(.+)$', views.index2, name='index2'),
 
 ]
