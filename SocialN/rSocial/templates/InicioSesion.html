@@ -1,5 +1,14 @@
+<a href="/rSocial">Home</a>
 </ul>
 <form action="/rSocial/Inicio/" method="post">{% csrf_token %}
 {{ formulario }}
 <input type="submit" value="Entrar" />
+{% if mal_u %}
+<p>Usuario no resgistrado!</p>
+{% else %}
+{% endif %}
+{% if mal_p %}
+<p>Campo password incorrecto</p>
+{% else %}
+{% endif %}
 </form>

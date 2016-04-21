@@ -1,9 +1,11 @@
 <ul>
 {% if Logeado %}
+<li><a href="/rSocial/ind/{{ usuario }}">Home</a></li>
 <li>En sesion como:</li>
 <li>{{ nombre }}</li>
 <li><a href="/rSocial/salir/{{ usuario }}">Salir</a></li>
 {% else %}
+<li><a href="/rSocial">Home</a></li>
 <li><a href="/rSocial/registro">Registro</a></li>
 <li><a href="/rSocial/Inicio">Inicion Sesion</a></li>
 <li><a href="/admin">Admin</a></li>

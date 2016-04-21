@@ -47,10 +47,11 @@ def registro(request):
 			em = form.cleaned_data['email']
 			if (usuario.objects.filter(email=em).count()==0):
 			    r=usuario(nombre= form.cleaned_data['nombre'],email=form.cleaned_data['email'], password=form.cleaned_data['password'], isAdmin=False)
+			    r.inSesion = True
 			    r.save()
 			    t = get_template("registro.html")
 			    html=t.render(RequestContext(request, {"formulario":"Registro_exitoso"}))
-			    return HttpResponse(html)
+			    return HttpResponseRedirect(reverse('Perfil', args=(r.id_usuario,)))
 			else:
 			    t=get_template("registro.html")
 			    form = RegistroUsuario()
@@ -69,11 +70,24 @@ def Inicio(request):
 		form = InicioSesion(request.POST)
 		if form.is_valid():
 			em = form.cleaned_data['email']
+			pp = form.cleaned_data['password']
 			if not(usuario.objects.filter(email=em).count()==0):
 				user = usuario.objects.get(email=em)
-				user.inSesion = True
-				user.save()
-				return HttpResponseRedirect(reverse('Perfil', args=(user.id_usuario,)))
+				if user.password == pp:
+				    user.inSesion = True
+				    user.save()
+				    return HttpResponseRedirect(reverse('Perfil', args=(user.id_usuario,)))
+				else:
+				    form = InicioSesion()
+				    t = get_template("InicioSesion.html")
+				    html = t.render(RequestContext(request,{"formulario":form, "mal_p":True}))
+				    return HttpResponse(html)
+			else:
+			    form = InicioSesion()
+			    t = get_template("InicioSesion.html")
+			    html = t.render(RequestContext(request, {"formulario":form, "mal_u":True}))
+			    return HttpResponse(html) 
+
 				#pasar user kawart
 	else:
 		form = InicioSesion()
@@ -94,33 +108,41 @@ def Perfil(request, id2):
 	# Create your views here.
 
 def salir(request, id2):
+	print id2
+	usr = None
 	usr = usuario.objects.get(id_usuario=id2)
-	if len(id2) == 3:
-		usr = usuario.objects.get(id_usuario=id2[2])
-	usr.inSesion = False
+	if not (usr == None):
+		usr.inSesion = False
+		usr.save()
 	return index(request)
 
 
 def paginas(request, id2):
 	usr = None
-	if len(id2)==3:
-		usr = usuario.objects.get(id_usuario=id2[2])
-	p = post.objects.get(id_post=id2[0])
-	if not(user == None):
-		t=get_template("posts.html")
-		html = t.render(RequestContext(request, {"Logeado":True, "usuario":usr.nombre, "usuariod":id2[2], "titulo":p.titulo, "cuerpo":p.body}))
-		return HttpResponse(html)
+	if len(id2)>=3:
+		usr = usuario.objects.get(id_usuario=id2.split('/')[1])
+	p = post.objects.get(id_post=id2.split('/')[0])
+	if not(usr == None):
+		if usr.inSesion:
+		    t=get_template("posts.html")
+		    html = t.render(RequestContext(request, {"Logeado":True, "nombre":usr.nombre, "usuario":id2.split('/')[1], "titulo":p.titulo, "cuerpo":p.body}))
+		    return HttpResponse(html)
+		else:
+		    form = InicioSesion()
+		    t = get_template("perfil.html")
+		    html = t.render(RequestContext(request, {"Logeado":False, "formulario":form}))
+		    return HttpResponse(html)	
 	else:
-		t = get_template("post.html")
+		t = get_template("posts.html")
 		html = t.render(RequestContext(request, {"Logeado":False, "titulo":p.titulo, "cuerpo":p.body}))
 		return HttpResponse(html)
 
 
 def Controller(request, id2):
-	if len(id2)==3:
-		usr = usuario.objects.get(id_usuario=id2[2])
+	if len(id2)>=3:
+		usr = usuario.objects.get(id_usuario=id2.split('/')[1])
 		if usr.inSesion:
-			b = grupo.objects.get(id_grupo=id2[0])
+			b = grupo.objects.get(id_grupo=id2.split('/')[0])
 			t = get_template("grupos.html")
 			a = False
 			z = False
@@ -132,7 +154,7 @@ def Controller(request, id2):
 			if not (post.objects.filter(id_grupo_post=b.id_grupo).count()==0):
 				c = True
 			ggg = b.fk_grupo_genero.nombre
-			html = t.render(RequestContext(request, {"Logeado":True, "usuario": usr.nombre, "usuariod":id2[2],"nombre":b.nombre, "integrantes":miembro.objects.filter(fk_miembro_grupo=b.id_grupo), "g":ggg, "album":album.objects.filter(fk_album_grupo=b.id_grupo), "post":post.objects.filter(id_grupo_post=b.id_grupo), "fecha":b.fecha_inicio, "hay_integrante":a, "hay_album":z, "hay_post":c}))
+			html = t.render(RequestContext(request, {"Logeado":True, "usuario": usr.nombre, "usuariod":id2.split('/')[1],"nombre":b.nombre, "integrantes":miembro.objects.filter(fk_miembro_grupo=b.id_grupo), "g":ggg, "album":album.objects.filter(fk_album_grupo=b.id_grupo), "post":post.objects.filter(id_grupo_post=b.id_grupo), "fecha":b.fecha_inicio, "hay_integrante":a, "hay_album":z, "hay_post":c}))
 			return HttpResponse(html)
 		else:
 			form = InicioSesion()
