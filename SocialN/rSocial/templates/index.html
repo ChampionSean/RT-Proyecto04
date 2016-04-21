@@ -1,14 +1,20 @@
-
 <ul>
+{% if Logeado %}
+<li>En sesion como:</li>
+<li>{{ nombre }}</li>
+<li><a href="/rSocial/salir/{{ usuario }}">Salir</a></li>
+{% else %}
 <li><a href="/rSocial/registro">Registro</a></li>
 <li><a href="/rSocial/Inicio">Inicion Sesion</a></li>
 <li><a href="/admin">Admin</a></li>
+{% endif %}
 </ul>
+
 <h1>Posts</h1>
 {% if hay_posts %}
     <ul>
     {% for post in post_list %}
-        <li><a href="/rSocial/post/{{ post.id_post }}/">{{ post.titulo }}</a></li>
+        <li><a href="/rSocial/post/{{ post.id_post }}/{{ usuario }}">{{ post.titulo }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
@@ -18,7 +24,7 @@
 {% if hay_grupos %}
     <ul>
     {% for group in group_list %}
-        <li><a href="/rSocial/grupo/{{ group.id_grupo }}/">{{ group.nombre }}</a></li>
+        <li><a href="/rSocial/banda/{{ group.id_grupo }}/{{ usuario }}">{{ group.nombre }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

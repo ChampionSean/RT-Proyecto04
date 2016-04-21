@@ -1,2 +1,9 @@
+{% if Logeado %}
+<p>Registro Exitoso</p>
 {{ nombre }}
-{{ esAdmin }}
+{% else %}
+<p>No estas Registrado</p>
+<form action="/rSocial/Inicio/" method="post">{% csrf_token %}
+{{ formulario }}
+<input type="submit" value="Entrar" />
+{% endif %}

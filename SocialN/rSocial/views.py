@@ -7,10 +7,29 @@ from form import RegistroUsuario, InicioSesion
 from django.contrib.auth import authenticate, get_backends,login
 from django.core.urlresolvers import reverse
 
+
+
+def index2(request, id2):
+	b = usuario.objects.get(id_usuario=id2)
+	if b.inSesion == True:
+	    t = get_template("index.html")
+	    group_list = grupo.objects.order_by("id_grupo")
+	    post_list = post.objects.order_by("id_post")
+	    bandera1 = False
+	    bandera2 = False
+	    if not (post_list.count()==0):
+		    bandera1 = True
+	    if not (group_list.count() == 0):
+	        bandera2 = True	
+	    html = t.render(RequestContext(request, {"nombre":b.nombre, "Logeado":True,"hay_posts":bandera1,"hay_grupos":bandera2,"post_list":post_list,"group_list":group_list, "usuario":id2}))
+	    return HttpResponse(html)
+
+
+
 def index(request):
 	t = get_template("index.html")
-	post_list = post.objects.order_by("id_post")
 	group_list = grupo.objects.order_by("id_grupo")
+	post_list = post.objects.order_by("id_post")
 	bandera1 = False
 	bandera2 = False
 	if not (post_list.count()==0):
@@ -52,6 +71,8 @@ def Inicio(request):
 			em = form.cleaned_data['email']
 			if not(usuario.objects.filter(email=em).count()==0):
 				user = usuario.objects.get(email=em)
+				user.inSesion = True
+				user.save()
 				return HttpResponseRedirect(reverse('Perfil', args=(user.id_usuario,)))
 				#pasar user kawart
 	else:
@@ -62,13 +83,73 @@ def Inicio(request):
 
 def Perfil(request, id2):
 	b = usuario.objects.get(id_usuario=id2)
-	t = get_template("perfil.html")
-	html = t.render(RequestContext(request,{"nombre":b.nombre, "esAdmin":b.isAdmin}))
-	return HttpResponse(html)
+	if b.inSesion == True:
+	    return HttpResponseRedirect(reverse('index2', args=(b.id_usuario,)))
+	else:
+		form = InicioSesion()
+		t=get_template("perfil.html")
+		html = t.render(RequestContext(request,{"Logeado":False, "formulario":form}))
+		return HttpResponse(html)    
 
 	# Create your views here.
-def grupo(request, id2):
-	b = grupo.objects.get(id_grupo=id2)
-	t = get_template("grupo.html")
-	html = t.render(RequestContext(request, {"nombre":b.nombre, "integrantes":miembro.objects.filter(fk_miembro_grupo=b.id_grupo)	, "genero":b.fk_grupo_genero, "album":, "post":, "fecha"}))
+
+def salir(request, id2):
+	usr = usuario.objects.get(id_usuario=id2)
+	if len(id2) == 3:
+		usr = usuario.objects.get(id_usuario=id2[2])
+	usr.inSesion = False
+	return index(request)
+
+
+def paginas(request, id2):
+	usr = None
+	if len(id2)==3:
+		usr = usuario.objects.get(id_usuario=id2[2])
+	p = post.objects.get(id_post=id2[0])
+	if not(user == None):
+		t=get_template("posts.html")
+		html = t.render(RequestContext(request, {"Logeado":True, "usuario":usr.nombre, "usuariod":id2[2], "titulo":p.titulo, "cuerpo":p.body}))
+		return HttpResponse(html)
+	else:
+		t = get_template("post.html")
+		html = t.render(RequestContext(request, {"Logeado":False, "titulo":p.titulo, "cuerpo":p.body}))
+		return HttpResponse(html)
+
+
+def Controller(request, id2):
+	if len(id2)==3:
+		usr = usuario.objects.get(id_usuario=id2[2])
+		if usr.inSesion:
+			b = grupo.objects.get(id_grupo=id2[0])
+			t = get_template("grupos.html")
+			a = False
+			z = False
+			c = False
+			if not (miembro.objects.filter(fk_miembro_grupo=b.id_grupo).count()==0):
+				a = True
+			if not (album.objects.filter(fk_album_grupo=b.id_grupo).count()==0):
+				z = True
+			if not (post.objects.filter(id_grupo_post=b.id_grupo).count()==0):
+				c = True
+			ggg = b.fk_grupo_genero.nombre
+			html = t.render(RequestContext(request, {"Logeado":True, "usuario": usr.nombre, "usuariod":id2[2],"nombre":b.nombre, "integrantes":miembro.objects.filter(fk_miembro_grupo=b.id_grupo), "g":ggg, "album":album.objects.filter(fk_album_grupo=b.id_grupo), "post":post.objects.filter(id_grupo_post=b.id_grupo), "fecha":b.fecha_inicio, "hay_integrante":a, "hay_album":z, "hay_post":c}))
+			return HttpResponse(html)
+		else:
+			form = InicioSesion()
+			t=get_template("perfil.html")
+			html = t.render(RequestContext(request,{"Logeado":False, "formulario":form}))
+			return HttpResponse(html)
+	b = grupo.objects.get(id_grupo=id2[0])
+	t = get_template("grupos.html")
+	a = False
+	z = False
+	c = False
+	if not (miembro.objects.filter(fk_miembro_grupo=b.id_grupo).count()==0):
+		a = True
+	if not (album.objects.filter(fk_album_grupo=b.id_grupo).count()==0):
+		z = True
+	if not (post.objects.filter(id_grupo_post=b.id_grupo).count()==0):
+		c = True
+	ggg = b.fk_grupo_genero.nombre
+	html = t.render(RequestContext(request, {"nombre":b.nombre, "integrantes":miembro.objects.filter(fk_miembro_grupo=b.id_grupo), "g":ggg, "album":album.objects.filter(fk_album_grupo=b.id_grupo), "post":post.objects.filter(id_grupo_post=b.id_grupo), "fecha":b.fecha_inicio, "hay_integrante":a, "hay_album":z, "hay_post":c}))
 	return HttpResponse(html)
