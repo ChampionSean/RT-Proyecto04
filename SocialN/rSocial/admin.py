@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import genero, grupo, usuario, album, miembro, post
+from .models import genero, grupo, usuario, album, miembro, post, comentario
 
 
 
@@ -36,6 +36,6 @@ admin.site.register(usuario)
 admin.site.register(album)
 admin.site.register(miembro)
 admin.site.register(post)
-
+admin.site.register(comentario)
 
 # Register your models here.

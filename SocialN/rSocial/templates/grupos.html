@@ -1,14 +1,14 @@
 <ul>
 {% if Logeado %}
-<li><a href="/rSocial/ind/{{ usuariod }}">Home</a></li>
-<li><a href="/rSocial/salir/{{ usuariod }}">Salir</a></li>
+<li><a href="/ind/{{ usuariod }}">Home</a></li>
+<li><a href="/salir/{{ usuariod }}">Salir</a></li>
 <li>Usuario</li>
 <li>{{ usuario }}</li>
 <li>{{ usuariod }}</li>
 {% else %}
-<li><a href="/rSocial">Home</a></li>
-<li><a href="/rSocial/registro">Registro</a></li>
-<li><a href="/rSocial/Inicio">Inicion Sesion</a></li>
+<li><a href="/">Home</a></li>
+<li><a href="/registro">Registro</a></li>
+<li><a href="/Inicio">Inicion Sesion</a></li>
 <li><a href="/admin">Admin</a></li>
 {% endif %}
 
@@ -44,7 +44,7 @@
 <p>Posts: </p>
     <ul>
     {% for post in post %}
-        <li><a href="/rSocial/post/{{ post.id_post }}/{{ usuariod }}">{{ post.titulo }}</a></li>
+        <li><a href="/post/{{ post.id_post }}/{{ usuariod }}">{{ post.titulo }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

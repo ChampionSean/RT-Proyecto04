@@ -17,6 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^rSocial/', include('rSocial.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r'', include('rSocial.urls')),
+    url(r'^comments/', include('django_comments.urls')),
+    url(r'^admin/', admin.site.urls),   
 ]

@@ -3,8 +3,8 @@
 {{ nombre }}
 {% else %}
 <p>No estas Registrado</p>
-<form action="/rSocial/Inicio/" method="post">{% csrf_token %}
+<form action="/Inicio/" method="post">{% csrf_token %}
 {{ formulario }}
 <input type="submit" value="Entrar" />
-<a href="/rSocial">Home</a>
+<a href="/">Home</a>
 {% endif %}

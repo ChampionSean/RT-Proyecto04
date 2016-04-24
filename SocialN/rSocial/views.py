@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, RequestContext
 from django.template.loader import get_template
-from rSocial.models import genero, grupo, usuario, album, miembro, post
+from rSocial.models import genero, grupo, usuario, album, miembro, post, comentario
 from form import RegistroUsuario, InicioSesion
 from django.contrib.auth import authenticate, get_backends,login
 from django.core.urlresolvers import reverse
@@ -29,9 +29,7 @@ def index2(request, id2):
 def index(request):
 	t = get_template("index.html")
 	group_list = grupo.objects.order_by("id_grupo")
-	post_list = post.objects.order_by("id_post")
-	bandera1 = False
-	bandera2 = False
+	post_list = post.objects.order_by("id_post")	
 	if not (post_list.count()==0):
 		bandera1 = True
 	if not (group_list.count() == 0):
@@ -118,14 +116,15 @@ def salir(request, id2):
 
 
 def paginas(request, id2):
-	usr = None
+	usr = None	
 	if len(id2)>=3:
 		usr = usuario.objects.get(id_usuario=id2.split('/')[1])
-	p = post.objects.get(id_post=id2.split('/')[0])
+	p = post.objects.get(id_post=id2.split('/')[0])		
+	comentario_list = comentario.objects.filter(id_post=p.id_post)
 	if not(usr == None):
 		if usr.inSesion:
 		    t=get_template("posts.html")
-		    html = t.render(RequestContext(request, {"Logeado":True, "nombre":usr.nombre, "usuario":id2.split('/')[1], "titulo":p.titulo, "cuerpo":p.body}))
+		    html = t.render(RequestContext(request, {"Logeado":True, "nombre":usr.nombre, "usuario":id2.split('/')[1], "titulo":p.titulo, "cuerpo":p.body,"comentario_list":comentario_list}))		    
 		    return HttpResponse(html)
 		else:
 		    form = InicioSesion()
@@ -133,8 +132,8 @@ def paginas(request, id2):
 		    html = t.render(RequestContext(request, {"Logeado":False, "formulario":form}))
 		    return HttpResponse(html)	
 	else:
-		t = get_template("posts.html")
-		html = t.render(RequestContext(request, {"Logeado":False, "titulo":p.titulo, "cuerpo":p.body}))
+		t = get_template("posts.html")		
+		html = t.render(RequestContext(request, {"Logeado":False, "titulo":p.titulo, "cuerpo":p.body, "comentario_list":comentario_list}))
 		return HttpResponse(html)
 
 
