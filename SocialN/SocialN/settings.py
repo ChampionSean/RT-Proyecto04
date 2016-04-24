@@ -82,7 +82,7 @@ DATABASES = {
         'USER': 'jango',
         'PASSWORD': 'gorgonita999',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 

@@ -1,35 +1,148 @@
-<ul>
-{% if Logeado %}
-<li><a href="/rSocial/ind/{{ usuario }}">Home</a></li>
-<li>En sesion como:</li>
-<li>{{ nombre }}</li>
-<li><a href="/rSocial/salir/{{ usuario }}">Salir</a></li>
-{% else %}
-<li><a href="/rSocial">Home</a></li>
-<li><a href="/rSocial/registro">Registro</a></li>
-<li><a href="/rSocial/Inicio">Inicion Sesion</a></li>
-<li><a href="/admin">Admin</a></li>
-{% endif %}
-</ul>
+<!DOCTYPE html>
+<html lang="en">
 
-<h1>Posts</h1>
-{% if hay_posts %}
-    <ul>
-    {% for post in post_list %}
-        <li><a href="/rSocial/post/{{ post.id_post }}/{{ usuario }}">{{ post.titulo }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No hay posts</p>
-{% endif %}
-<h1>Grupos</h1>
-{% if hay_grupos %}
-    <ul>
-    {% for group in group_list %}
-        <li><a href="/rSocial/banda/{{ group.id_grupo }}/{{ usuario }}">{{ group.nombre }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No hay grupos</p>
-{% endif %}
+<head>
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>rSocial - Bootstrap</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                {% if Logeado %}
+                <a class="navbar-brand" href="">
+                    {{ nombre }}
+                </a>
+                {% else %}
+                <a class="navbar-brand" href="#">
+                    rSocial
+                </a>
+                {% endif %}
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if Logeado %}
+                    <li>
+                        <a href="/rSocial/ind/{{ usuario }}">Inicio</a>
+                    </li>
+                    <li>
+                        <a href="/rSocial/salir/{{ usuario }}">Salir</a>
+                    </li>
+                    {% else %}
+                    <li><a href="/rSocial">Inicio</a></li>
+                    <li><a href="/rSocial/registro">Registro</a></li>
+                    <li><a href="/rSocial/Inicio">Inicio Sesión</a></li>
+                    <li><a href="/admin">Admin</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Call to Action Well -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="well text-center">
+                    Bienvenido a rSocial aquí podras encontrar a tus artistas favoritos y publicaciones interesantes acerca de ellos.
+                </div>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <!-- Content Row -->
+        <div class="row">
+          <div class="container">
+            <h1>Posts</h1>
+            {% if hay_posts %}
+              {% for post in post_list %}
+              <div class="col-md-4">
+                <h2>{{ post.titulo }}</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe rem nisi accusamus error velit animi non ipsa placeat...</p>
+                <a class="btn btn-default" href="/rSocial/post/{{ post.id_post }}/{{ usuario }}">More Info</a>
+              </div>
+              {% endfor %}
+            {% else %}
+            <div class="col-md-12">
+                <p>No hay posts</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Content Row -->
+        <div class="row">
+          <div class="container">
+            <h1>Grupos</h1>
+            {% if hay_grupos %}
+              {% for group in group_list %}
+              <div class="col-md-4">
+                <a href="/rSocial/banda/{{ group.id_grupo }}/{{ usuario }}">{{ group.nombre }}</a>
+              </div>
+              {% endfor %}
+            {% else %}
+            <div class="col-md-12">
+                <p>No hay grupos</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <hr/>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Your Website 2014</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
