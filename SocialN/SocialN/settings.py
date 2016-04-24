@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'SocialN.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'rsocial',
+        'NAME': 'rSocial',
         'USER': 'jango',
         'PASSWORD': 'gorgonita999',
         'HOST': 'localhost',
