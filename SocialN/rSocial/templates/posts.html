@@ -13,3 +13,30 @@
 </ul>
 <h1>{{ titulo }}</h1>
 <p>{{ cuerpo }}</p>
+<br>
+<br>
+<h1>Comentarios:</h1>
+<br>
+<br>
+{% if hay_comentarios %}
+{% for c in comentario %}
+<br>
+<p>{{ c.body }}</p>
+<p>Hecho por:{{ c.autor }}</p>
+<br>
+{% endfor %}
+{% else %}
+<p>No hay comentarios en este post</p>
+{% endif %}
+<br>
+<br>
+<p>Escribe un comentario:</p>
+{% if Logeado %}
+<form action="/rSocial/post/{{ post_id }}/{{ usuario }}" method="post">{% csrf_token %}
+{% else %}
+<form action="/rSocial/post/{{ post_id }}" method="post">{% csrf_token %}
+{% endif %}
+{{ formulario }}
+{{ mensaje }}
+<input type="submit" value="Guardar" />
+</form>

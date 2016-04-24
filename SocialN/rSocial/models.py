@@ -38,7 +38,11 @@ class post(models.Model):
 	body = models.CharField(max_length=500)
 	id_grupo_post = models.ForeignKey(grupo)
 
-
+class opinion(models.Model):
+	id_opinion = models.AutoField(primary_key = True)
+	autor = models.CharField(max_length=50)
+	body = models.CharField(max_length=500)
+	id_post_opinion = models.ForeignKey(post)
 
 
 # Create your models here.

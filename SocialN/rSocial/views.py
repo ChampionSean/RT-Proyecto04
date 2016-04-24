@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, RequestContext
 from django.template.loader import get_template
-from rSocial.models import genero, grupo, usuario, album, miembro, post
-from form import RegistroUsuario, InicioSesion
+from rSocial.models import genero, grupo, usuario, album, miembro, post, opinion
+from form import RegistroUsuario, InicioSesion, RegistroPost
 from django.contrib.auth import authenticate, get_backends,login
 from django.core.urlresolvers import reverse
 
@@ -119,13 +119,33 @@ def salir(request, id2):
 
 def paginas(request, id2):
 	usr = None
+	doe = "Visitante"
+	if request.method == 'POST':
+		form = RegistroPost(request.POST)
+		body = "hola :)"
+		if form.is_valid():
+			body = form.cleaned_data['cuerpo']
+		if len(id2)>=3:
+		    usr = usuario.objects.get(id_usuario=id2.split('/')[1])
+		if not(usr==None):
+		    doe = usr.nombre    
+		p = post.objects.get(id_post=id2.split('/')[0])    	
+		op = opinion(autor=doe, body=body, id_post_opinion=p)
+		op.save()
+	usr = None
+	bandera1 = False
+	listilla = []
+	if not(opinion.objects.filter(id_post_opinion=id2.split('/')[0]).count()==0):
+		listilla = opinion.objects.filter(id_post_opinion=id2.split('/')[0])
+		bandera1 = True
 	if len(id2)>=3:
 		usr = usuario.objects.get(id_usuario=id2.split('/')[1])
 	p = post.objects.get(id_post=id2.split('/')[0])
 	if not(usr == None):
 		if usr.inSesion:
 		    t=get_template("posts.html")
-		    html = t.render(RequestContext(request, {"Logeado":True, "nombre":usr.nombre, "usuario":id2.split('/')[1], "titulo":p.titulo, "cuerpo":p.body}))
+		    form = RegistroPost()
+		    html = t.render(RequestContext(request, {"comentario":listilla, "post_id":p.id_post,"hay_comentarios":bandera1, "formulario":form, "Logeado":True, "nombre":usr.nombre, "usuario":id2.split('/')[1], "titulo":p.titulo, "cuerpo":p.body}))
 		    return HttpResponse(html)
 		else:
 		    form = InicioSesion()
@@ -133,8 +153,9 @@ def paginas(request, id2):
 		    html = t.render(RequestContext(request, {"Logeado":False, "formulario":form}))
 		    return HttpResponse(html)	
 	else:
+		form = RegistroPost()
 		t = get_template("posts.html")
-		html = t.render(RequestContext(request, {"Logeado":False, "titulo":p.titulo, "cuerpo":p.body}))
+		html = t.render(RequestContext(request, {"comentario":listilla, "post_id":p.id_post, "hay_comentarios":bandera1, "formulario":form,"Logeado":False, "titulo":p.titulo, "cuerpo":p.body}))
 		return HttpResponse(html)
 
 
